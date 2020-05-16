@@ -78,7 +78,7 @@ describe("testing jokes", () => {
     expect(response.body).toHaveLength(20);
   });
 
-  it("GET /api/jokes should return 401 of not authenticated", async () => {
+  it("GET /api/jokes should return 401 if not authenticated", async () => {
     const response = await request(server).get("/api/jokes");
 
     expect(response.status).toBe(401);
