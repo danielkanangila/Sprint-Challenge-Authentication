@@ -50,7 +50,7 @@ describe("testing authentication", () => {
       .send(defaultCredentials);
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toMatch(/logged in/);
+    expect(response.body.token).toBeTruthy();
   });
 
   it("POST /api/auth/login should return 403 when invalid credentials", async () => {
@@ -61,6 +61,28 @@ describe("testing authentication", () => {
     expect(response.status).toBe(403);
     expect(response.body.message).toMatch(/Invalid credentials/);
   });
+
+  it("GET /api/auth/logout", async () => {
+    // register new user
+    await request(server)
+      .post("/api/auth/register")
+      .send(defaultCredentials)
+      .expect(201);
+    // Login to get access token
+    const accessToken = (
+      await request(server).post("/api/auth/login").send(defaultCredentials)
+    ).body.token;
+    // Logout
+    await request(server)
+      .get("/api/auth/logout")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(200);
+    // Test if access token is revoked
+    await request(server)
+      .get("/api/jokes")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .expect(403);
+  });
 });
 
 describe("testing jokes", () => {
@@ -68,11 +90,11 @@ describe("testing jokes", () => {
     await request(server).post("/api/auth/register").send(defaultCredentials);
     const accessToken = (
       await request(server).post("/api/auth/login").send(defaultCredentials)
-    ).header["set-cookie"];
+    ).body.token;
 
     const response = await request(server)
       .get("/api/jokes")
-      .set("Cookie", accessToken);
+      .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(20);
@@ -81,6 +103,6 @@ describe("testing jokes", () => {
   it("GET /api/jokes should return 401 if not authenticated", async () => {
     const response = await request(server).get("/api/jokes");
 
-    expect(response.status).toBe(401);
+    expect(response.status).toBe(403);
   });
 });

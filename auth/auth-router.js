@@ -2,6 +2,8 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("./../models/User");
+const authentication = require("./authenticate-middleware");
+const RevokedToken = require("./../models/RevokedToken");
 
 router.post("/register", validateBody, async (req, res, next) => {
   try {
@@ -31,9 +33,7 @@ router.post("/login", async (req, res, next) => {
       };
       const accessToken = jwt.sign(tokenPayload, process.env.JWT_SECRET);
 
-      res.cookie("token", accessToken);
-
-      res.json({ message: "Successful logged in." });
+      res.json({ token: accessToken });
     } else {
       res.status(403).json({ message: "Invalid credentials" });
     }
@@ -42,9 +42,12 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/logout", (req, res) => {
-  if (req.cookies) {
-    res.cookie("token", ""), res.json({ message: "successful logged out." });
+router.get("/logout", authentication, async (req, res, next) => {
+  try {
+    await RevokedToken.create({ token: req.token });
+    res.json({ message: "Successful logged out." });
+  } catch (error) {
+    next(error);
   }
 });
 
