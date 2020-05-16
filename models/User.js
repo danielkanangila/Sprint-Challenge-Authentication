@@ -7,7 +7,7 @@ class User extends Model {
   }
 
   findById(id) {
-    return this.query().where({ id }).select("id", "username");
+    return this.query().where({ id }).select("id", "username").first();
   }
 
   async isExists(username) {

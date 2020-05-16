@@ -14,7 +14,7 @@ class Model {
   }
 
   findById(id) {
-    return this.query().where({ id });
+    return this.query().where({ id }).first();
   }
 
   create(payload) {
