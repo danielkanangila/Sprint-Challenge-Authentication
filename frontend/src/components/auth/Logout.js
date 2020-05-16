@@ -9,7 +9,7 @@ const Logout = () => {
       .get(`${process.env.REACT_APP_API_URL}/auth/logout`)
       .then(() => {
         localStorage.removeItem("token");
-        history.push("/login");
+        window.location = "/login";
       })
       .catch((err) => console.log(err.response || err));
   }, [history]);

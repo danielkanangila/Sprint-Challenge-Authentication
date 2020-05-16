@@ -33,7 +33,6 @@ const Form = ({ handleSubmit, errors }) => {
       <h1>{title}</h1>
       {errors && <div className="alert danger">{errors}</div>}
       <div className="field">
-        <label>Username</label>
         <input
           onChange={handleChange}
           value={credentials.username}
@@ -42,9 +41,9 @@ const Form = ({ handleSubmit, errors }) => {
           placeholder="danJoe258"
           required
         />
+        <label>Username</label>
       </div>
       <div className="field">
-        <label>Password</label>
         <input
           onChange={handleChange}
           value={credentials.password}
@@ -53,6 +52,7 @@ const Form = ({ handleSubmit, errors }) => {
           placeholder="********"
           required
         />
+        <label>Password</label>
       </div>
       <div className="form-footer">
         <button className="btn btn-primary">{title}</button>

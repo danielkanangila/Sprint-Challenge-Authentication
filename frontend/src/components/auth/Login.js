@@ -17,7 +17,7 @@ const Login = () => {
       .post(url, credentials)
       .then((res) => {
         localStorage.setItem("token", res.data.token);
-        history.push("/");
+        window.location = "/";
       })
       .catch((err) => setErrors(err.response.data.message));
   };

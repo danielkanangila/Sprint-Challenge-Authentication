@@ -6,6 +6,7 @@ import { Container } from "./components/styled-components";
 import PrivateRoute from "./components/PrivateRoute";
 import Jokes from "./components/jokes/Jokes";
 import Logout from "./components/auth/Logout";
+import LogoutButton from "./components/LogoutButton";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/signup" component={Signup} />
           <Route path="/logout" component={Logout} />
+          {localStorage.getItem("token") && <LogoutButton />}
         </Container>
       </Switch>
     </div>

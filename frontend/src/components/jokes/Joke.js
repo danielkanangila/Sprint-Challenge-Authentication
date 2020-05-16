@@ -1,14 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 
 const Joke = ({ joke }) => {
   return (
-    <Wrapper>
+    <div className="jokes-item">
       <p>{joke}</p>
-    </Wrapper>
+    </div>
   );
 };
-
-const Wrapper = styled.div``;
 
 export default Joke;
