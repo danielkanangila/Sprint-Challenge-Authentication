@@ -1,24 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import Form from "./Form";
-import Cookie from "js-cookie";
 
 const Login = () => {
+  const [errors, setErrors] = useState("");
   const history = useHistory();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) return history.push("/");
+  }, [history]);
 
   const handleLogin = (credentials) => {
     const url = `${process.env.REACT_APP_API_URL}/auth/login`;
     axios
       .post(url, credentials)
       .then((res) => {
-        console.log(Cookie.get("session"));
-        //history.push("/");
+        localStorage.setItem("token", res.data.token);
+        history.push("/");
       })
-      .catch((err) => console.log(err.response.data.message || err));
+      .catch((err) => setErrors(err.response.data.message));
   };
 
-  return <Form handleSubmit={handleLogin} />;
+  return <Form handleSubmit={handleLogin} errors={errors} />;
 };
 
 export default Login;

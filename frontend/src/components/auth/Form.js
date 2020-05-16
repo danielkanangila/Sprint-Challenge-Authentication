@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { StyledForm } from "../styled-components";
-import { validateCredentials } from "./../../utils";
 
-const Form = ({ handleSubmit }) => {
+const Form = ({ handleSubmit, errors }) => {
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
   const [title, setTitle] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     const title = location.pathname === "/login" ? "Login" : "Signup";
     setTitle(title);
-  }, []);
-
-  const location = useLocation();
-
-  const [errors, setErrors] = useState(null);
+  }, [location.pathname]);
 
   const handleChange = (e) => {
     setCredentials({
@@ -29,15 +25,13 @@ const Form = ({ handleSubmit }) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (location.pathname === "/signup")
-      validateCredentials(credentials, setErrors);
-
     handleSubmit(credentials);
   };
 
   return (
     <StyledForm onSubmit={onSubmit}>
       <h1>{title}</h1>
+      {errors && <div className="alert danger">{errors}</div>}
       <div className="field">
         <label>Username</label>
         <input
@@ -63,7 +57,7 @@ const Form = ({ handleSubmit }) => {
       <div className="form-footer">
         <button className="btn btn-primary">{title}</button>
         {location.pathname === "/signup" ? (
-          <Link to="/login">I have an account. Login</Link>
+          <Link to="/login">I have an account, Login</Link>
         ) : (
           <Link to="/signup">Create an account</Link>
         )}
